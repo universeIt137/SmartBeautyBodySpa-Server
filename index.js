@@ -32,6 +32,7 @@ async function run() {
         const packageCollection = client.db('GloriousSPA').collection('packages');
 
         const bookCollection = client.db('GloriousSPA').collection('books');
+        const homepageCollection = client.db('GloriousSPA').collection('homepageContent');
 
 
         // package related api 
@@ -44,7 +45,7 @@ async function run() {
 
         app.get('/package', async (req, res) => {
             const result = await packageCollection.find().toArray();
-            
+
             res.send(result);
         })
 
@@ -78,7 +79,7 @@ async function run() {
         })
 
 
-    
+
         // booking related api 
         app.post('/booking', async (req, res) => {
             const data = req.body;
@@ -134,6 +135,34 @@ async function run() {
         })
 
 
+
+        // homepage api
+
+        app.post('/homepageContent/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            if (id === 'notAvailable') {
+                const result = await homepageCollection.insertOne(data);
+                res.send(result);
+            } else {
+                const query = { _id: new ObjectId(id) };
+                const options = { upsert: true };
+                const updatedInfo = {
+                    $set: {
+                        ...data
+                    }
+                }
+
+                const result = await homepageCollection.updateOne(query, updatedInfo, options);
+                res.send(result);
+            }
+
+        })
+
+        app.get('/homepageContent', async (req, res) => {
+            const result = await homepageCollection.find().toArray();
+            res.send(result);
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
