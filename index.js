@@ -33,6 +33,7 @@ async function run() {
 
         const bookCollection = client.db('GloriousSPA').collection('books');
         const homepageCollection = client.db('GloriousSPA').collection('homepageContent');
+        const photoGalleryCollection = client.db('GloriousSPA').collection('photoGallery');
 
 
         // package related api 
@@ -163,6 +164,50 @@ async function run() {
             const result = await homepageCollection.find().toArray();
             res.send(result);
         })
+
+        // photo gallery api
+
+        app.post('/photoGallery', async (req, res) => {
+            const data = req.body;
+            const result = await photoGalleryCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/photoGallery', async (req, res) => {
+            const result = await photoGalleryCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/photoGallery/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await photoGalleryCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.put('/photoGallery/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+
+            const result = await photoGalleryCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        })
+
+        app.delete('/photoGallery/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await photoGalleryCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
