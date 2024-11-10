@@ -34,6 +34,7 @@ async function run() {
         const bookCollection = client.db('GloriousSPA').collection('books');
         const homepageCollection = client.db('GloriousSPA').collection('homepageContent');
         const photoGalleryCollection = client.db('GloriousSPA').collection('photoGallery');
+        const officeHourCollection = client.db('GloriousSPA').collection('officeHour');
 
 
         // package related api 
@@ -204,6 +205,47 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await photoGalleryCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // office hour api 
+        app.post('/office-hour', async (req, res) => {
+            const data = req.body;
+            const result = await officeHourCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/office-hour', async (req, res) => {
+            const result = await officeHourCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/office-hour/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await officeHourCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.put('/office-hour/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+
+            const result = await officeHourCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        })
+
+        app.delete('/office-hour/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await officeHourCollection.deleteOne(query);
             res.send(result);
         })
 
