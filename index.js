@@ -35,6 +35,7 @@ async function run() {
         const homepageCollection = client.db('GloriousSPA').collection('homepageContent');
         const photoGalleryCollection = client.db('GloriousSPA').collection('photoGallery');
         const officeHourCollection = client.db('GloriousSPA').collection('officeHour');
+        const testimonialCollection = client.db('GloriousSPA').collection('testimonial');
 
 
         // package related api 
@@ -246,6 +247,47 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await officeHourCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // testimonial related api 
+        app.post('/testimonial', async (req, res) => {
+            const data = req.body;
+            const result = await testimonialCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/testimonial', async (req, res) => {
+            const result = await testimonialCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/testimonial/:id', async(req, res)=>{
+            const id = req.params.id; 
+            const query = { _id: new ObjectId(id) };
+            const result = await testimonialCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.put('/testimonial/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+
+            const result = await testimonialCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        })
+
+        app.delete('/testimonial/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await testimonialCollection.deleteOne(query);
             res.send(result);
         })
 
