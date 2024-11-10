@@ -31,6 +31,11 @@ async function run() {
         // await client.connect();
         const packageCollection = client.db('GloriousSPA').collection('packages');
 
+        const bookCollection = client.db('GloriousSPA').collection('books');
+
+
+        // package related api 
+
         app.post('/package', async (req, res) => {
             const data = req.body;
             const result = await packageCollection.insertOne(data);
@@ -69,6 +74,49 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await packageCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+    
+        // booking related api 
+        app.post('/booking', async (req, res) => {
+            const data = req.body;
+            const result = await bookCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/booking', async (req, res) => {
+            const result = await bookCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await bookCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.put('/booking/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+
+            const result = await bookCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        })
+
+        app.delete('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await bookCollection.deleteOne(query);
             res.send(result);
         })
 
