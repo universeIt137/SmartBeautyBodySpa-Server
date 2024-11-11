@@ -29,13 +29,13 @@ async function run() {
     try {
         // Connect the client to the server    (optional starting in v4.7)
         // await client.connect();
-        const packageCollection = client.db('GloriousSPA').collection('packages');
+        const packageCollection = client.db('SmartSPA').collection('packages');
 
-        const bookCollection = client.db('GloriousSPA').collection('books');
-        const homepageCollection = client.db('GloriousSPA').collection('homepageContent');
-        const photoGalleryCollection = client.db('GloriousSPA').collection('photoGallery');
-        const officeHourCollection = client.db('GloriousSPA').collection('officeHour');
-        const testimonialCollection = client.db('GloriousSPA').collection('testimonial');
+        const bookCollection = client.db('SmartSPA').collection('books');
+        const homepageCollection = client.db('SmartSPA').collection('homepageContent');
+        const photoGalleryCollection = client.db('SmartSPA').collection('photoGallery');
+        const officeHourCollection = client.db('SmartSPA').collection('officeHour');
+        const testimonialCollection = client.db('SmartSPA').collection('testimonial');
 
 
         // package related api 
