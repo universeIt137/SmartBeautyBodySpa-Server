@@ -383,7 +383,8 @@ async function run() {
         // contact related api
 
         app.post('/contact', async (req, res) => {
-            const data = req.body;
+            const { name, email, subject, message } = req.body;
+            const data = { name, email, subject, message, status: false };
             const result = await contactCollection.insertOne(data);
             res.send(result);
         });
@@ -392,7 +393,6 @@ async function run() {
             const result = await contactCollection.find().toArray();
             res.send(result);
         });
-
         app.get('/contact/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
@@ -408,6 +408,19 @@ async function run() {
             const updatedInfo = {
                 $set: {
                     ...data
+                }
+            }
+            const result = await contactCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        });
+
+        app.put('/contact-status/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    status: true
                 }
             }
             const result = await contactCollection.updateOne(query, updatedInfo, options);
