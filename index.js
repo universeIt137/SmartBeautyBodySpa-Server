@@ -36,6 +36,7 @@ async function run() {
         const photoGalleryCollection = client.db('SmartSPA').collection('photoGallery');
         const officeHourCollection = client.db('SmartSPA').collection('officeHour');
         const testimonialCollection = client.db('SmartSPA').collection('testimonial');
+        const packageSliderCollection = client.db('SmartSPA').collection('package-slider');
 
 
         // package related api 
@@ -262,8 +263,8 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/testimonial/:id', async(req, res)=>{
-            const id = req.params.id; 
+        app.get('/testimonial/:id', async (req, res) => {
+            const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await testimonialCollection.findOne(query);
             res.send(result);
@@ -288,6 +289,49 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await testimonialCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+        // package slider related api
+
+        app.post('/package-slider', async (req, res) => {
+            const data = req.body;
+            const result = await packageSliderCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/package-slider', async (req, res) => {
+            const result = await packageSliderCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/package-slider/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await packageSliderCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.put('/package-slider/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+
+            const result = await packageSliderCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        })
+
+        app.delete('/package-slider/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await packageSliderCollection.deleteOne(query);
             res.send(result);
         })
 
