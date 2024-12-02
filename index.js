@@ -39,6 +39,7 @@ async function run() {
         const packageSliderCollection = client.db('SmartSPA').collection('package-slider');
         const bannerCollection = client.db('SmartSPA').collection('banner');
         const contactCollection = client.db('SmartSPA').collection('contacts');
+        const whyChooseUsCollection = client.db('SmartSPA').collection('whyChooseUs');
 
 
         // package related api 
@@ -383,8 +384,8 @@ async function run() {
         // contact related api
 
         app.post('/contact', async (req, res) => {
-            const { name, email, subject, message } = req.body;
-            const data = { name, email, subject, message, status: false };
+            const { name, email, subject, message, phone } = req.body;
+            const data = { name, email, subject, message, phone, status: false };
             const result = await contactCollection.insertOne(data);
             res.send(result);
         });
@@ -416,7 +417,7 @@ async function run() {
 
         app.put('/contact-status/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) }; 
+            const query = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const updatedInfo = {
                 $set: {
@@ -433,6 +434,106 @@ async function run() {
             const result = await contactCollection.deleteOne(query);
             res.send(result);
         });
+
+
+        // contact related api
+
+        app.post('/contact', async (req, res) => {
+            const { name, email, subject, message, phone } = req.body;
+            const data = { name, email, subject, message, phone, status: false };
+            const result = await contactCollection.insertOne(data);
+            res.send(result);
+        });
+
+        app.get('/contact', async (req, res) => {
+            const result = await contactCollection.find().toArray();
+            res.send(result);
+        });
+        app.get('/contact/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await contactCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.put('/contact/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+            const result = await contactCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        });
+
+        app.put('/contact-status/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    status: true
+                }
+            }
+            const result = await contactCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        });
+
+        app.delete('/contact/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await contactCollection.deleteOne(query);
+            res.send(result);
+        });
+
+
+
+        // why choose us related api
+
+
+        app.post('/choose', async (req, res) => {
+            const reqBody = req.body;
+            const result = await whyChooseUsCollection.insertOne(reqBody);
+            res.send(result);
+        });
+
+        app.get('/choose', async (req, res) => {
+            const result = await whyChooseUsCollection.find().toArray();
+            res.send(result);
+        });
+        app.get('/choose/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await whyChooseUsCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.put('/choose/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+            const result = await whyChooseUsCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        });
+
+
+        app.delete('/choose/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await whyChooseUsCollection.deleteOne(query);
+            res.send(result);
+        });
+
 
 
 
