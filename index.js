@@ -38,6 +38,7 @@ async function run() {
         const testimonialCollection = client.db('SmartSPA').collection('testimonial');
         const packageSliderCollection = client.db('SmartSPA').collection('package-slider');
         const bannerCollection = client.db('SmartSPA').collection('banner');
+        const contactCollection = client.db('SmartSPA').collection('contacts');
 
 
         // package related api 
@@ -337,46 +338,88 @@ async function run() {
         });
 
 
-                // banner related api
+        // banner related api
 
-                app.post('/banner', async (req, res) => {
-                    const data = req.body;
-                    const result = await bannerCollection.insertOne(data);
-                    res.send(result);
-                });
-        
-                app.get('/banner', async (req, res) => {
-                    const result = await bannerCollection.find().toArray();
-                    res.send(result);
-                });
-        
-                app.get('/banner/:id', async (req, res) => {
-                    const id = req.params.id;
-                    const query = { _id: new ObjectId(id) };
-                    const result = await bannerCollection.findOne(query);
-                    res.send(result);
-                });
-        
-                app.put('/banner/:id', async (req, res) => {
-                    const data = req.body;
-                    const id = req.params.id;
-                    const query = { _id: new ObjectId(id) };
-                    const options = { upsert: true };
-                    const updatedInfo = {
-                        $set: {
-                            ...data
-                        }
-                    }
-                    const result = await bannerCollection.updateOne(query, updatedInfo, options);
-                    res.send(result);
-                });
-        
-                app.delete('/banner/:id', async (req, res) => {
-                    const id = req.params.id;
-                    const query = { _id: new ObjectId(id) };
-                    const result = await bannerCollection.deleteOne(query);
-                    res.send(result);
-                });
+        app.post('/banner', async (req, res) => {
+            const data = req.body;
+            const result = await bannerCollection.insertOne(data);
+            res.send(result);
+        });
+
+        app.get('/banner', async (req, res) => {
+            const result = await bannerCollection.find().toArray();
+            res.send(result);
+        });
+
+        app.get('/banner/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await bannerCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.put('/banner/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+            const result = await bannerCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        });
+
+        app.delete('/banner/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await bannerCollection.deleteOne(query);
+            res.send(result);
+        });
+
+
+        // contact related api
+
+        app.post('/contact', async (req, res) => {
+            const data = req.body;
+            const result = await contactCollection.insertOne(data);
+            res.send(result);
+        });
+
+        app.get('/contact', async (req, res) => {
+            const result = await contactCollection.find().toArray();
+            res.send(result);
+        });
+
+        app.get('/contact/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await contactCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.put('/contact/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedInfo = {
+                $set: {
+                    ...data
+                }
+            }
+            const result = await contactCollection.updateOne(query, updatedInfo, options);
+            res.send(result);
+        });
+
+        app.delete('/contact/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await contactCollection.deleteOne(query);
+            res.send(result);
+        });
 
 
 
