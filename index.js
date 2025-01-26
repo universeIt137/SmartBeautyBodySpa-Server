@@ -37,6 +37,7 @@ async function run() {
         const photoGalleryCollection = client.db('SmartSPA').collection('photoGallery');
         const officeHourCollection = client.db('SmartSPA').collection('officeHour');
         const testimonialCollection = client.db('SmartSPA').collection('testimonial');
+        const bannerCollection = client.db('GloriousSPA').collection('banners');
 
 
         // package related api 
@@ -305,8 +306,6 @@ async function run() {
             res.send(result);
         });
 
-
-
         app.post('/user-login', async (req, res) => {
             try {
                 const { email, password } = req.body;
@@ -344,20 +343,12 @@ async function run() {
             }
         });
 
-
-
-
-
         // all user
 
         app.get('/user', isLogin, isAdmin, async (req, res) => {
             const result = (await userCollection.find().toArray());
             res.send(result);
         });
-
-
-
-
 
         // user profile
 
@@ -370,7 +361,6 @@ async function run() {
             const result = await userCollection.findOne(query);
             res.send(result);
         });
-
 
         const { ObjectId } = require("mongodb");
 
@@ -418,10 +408,7 @@ async function run() {
             let data = await userCollection.deleteOne(query);
             res.send(data);
         });
-
-
         // package slider related api
-
         app.post('/package-slider', async (req, res) => {
             const data = req.body;
             const result = await packageSliderCollection.insertOne(data);
