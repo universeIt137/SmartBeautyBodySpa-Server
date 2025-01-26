@@ -38,6 +38,7 @@ async function run() {
         const officeHourCollection = client.db('SmartSPA').collection('officeHour');
         const testimonialCollection = client.db('SmartSPA').collection('testimonial');
         const bannerCollection = client.db('GloriousSPA').collection('banners');
+        const userCollection = client.db('GloriousSPA').collection('users');
 
 
         // package related api 
