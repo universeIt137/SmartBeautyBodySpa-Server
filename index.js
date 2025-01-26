@@ -12,6 +12,7 @@ app.use(express.json());
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { isLogin, isAdmin } = require('./middleware');
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster1.olinusx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1`;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster1.olinusx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1`;
@@ -36,6 +37,7 @@ async function run() {
         const photoGalleryCollection = client.db('SmartSPA').collection('photoGallery');
         const officeHourCollection = client.db('SmartSPA').collection('officeHour');
         const testimonialCollection = client.db('SmartSPA').collection('testimonial');
+        const userCollection = client.db('SmartSPA').collection('users');
 
 
         // package related api 
@@ -262,8 +264,8 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/testimonial/:id', async(req, res)=>{
-            const id = req.params.id; 
+        app.get('/testimonial/:id', async (req, res) => {
+            const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await testimonialCollection.findOne(query);
             res.send(result);
@@ -289,7 +291,134 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const result = await testimonialCollection.deleteOne(query);
             res.send(result);
-        })
+        });
+
+
+
+
+        // user related api
+
+
+
+        app.post('/user', async (req, res) => {
+            const data = req.body;
+            const result = await userCollection.insertOne({ ...data, status: false, role: "user" });
+            res.send(result);
+        });
+
+
+
+        app.post('/user-login', async (req, res) => {
+            try {
+                const { email, password } = req.body;
+
+                // Validate input
+                if (!email || !password) {
+                    return res.status(400).json({ message: 'Email and password are required.' });
+                }
+
+                // Find the user with the given email and role as admin
+                const user = await userCollection.findOne({ email, role: "admin" });
+
+                if (!user) {
+                    return res.status(401).json({ message: 'Invalid email or user does not have admin rights.' });
+                }
+
+
+                // Generate JWT token
+                const token = jwt.sign(
+                    { id: user._id, role: user.role },
+                    "147854785", // Replace with a secure, environment-specific secret key
+                    { expiresIn: '1h' } // Token validity for 1 hour
+                );
+
+                // Return success response with token
+                res.status(200).json({
+                    message: 'Login successful.',
+                    token, // Send token to the client
+                    user: user,
+                    role: user.role
+                });
+            } catch (error) {
+                console.error('Error during login:', error);
+                res.status(500).json({ message: 'An error occurred. Please try again later.' });
+            }
+        });
+
+
+
+
+
+        // all user
+
+        app.get('/user', isLogin, isAdmin, async (req, res) => {
+            const result = (await userCollection.find().toArray());
+            res.send(result);
+        });
+
+
+
+
+
+        // user profile
+
+        app.get('/single-user', isLogin, isAdmin, async (req, res) => {
+            const id = req.headers.id;
+            const query = { _id: new ObjectId(id) };
+            const filter = {
+                _id: query
+            }
+            const result = await userCollection.findOne(query);
+            res.send(result);
+        });
+
+
+        const { ObjectId } = require("mongodb");
+
+        app.put("/user/:id", isLogin, isAdmin, async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+
+                // Find the current user data
+                const existingUser = await userCollection.findOne(query);
+
+                if (!existingUser) {
+                    return res.status(404).json({ message: "User not found" });
+                }
+
+                // Toggle role between "admin" and "user"
+                const currentRole = existingUser.role;
+                const newRole = currentRole === "admin" ? "user" : "admin";
+
+                // Update the user's role
+                const updateResult = await userCollection.updateOne(
+                    query,
+                    { $set: { role: newRole } },
+                    { upsert: true }
+                );
+
+                if (updateResult.modifiedCount === 0) {
+                    return res.status(400).json({ message: "Role update failed" });
+                }
+
+                res.status(200).json({
+                    message: "User role updated successfully",
+                    updatedRole: newRole,
+                });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal server error" });
+            }
+        });
+
+        // delete user
+        app.delete("/user/:id", async (req, res) => {
+            let id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            let data = await userCollection.deleteOne(query);
+            res.send(data);
+        });
 
 
 
