@@ -38,9 +38,9 @@ async function run() {
         const photoGalleryCollection = client.db('SmartSPA').collection('photoGallery');
         const officeHourCollection = client.db('SmartSPA').collection('officeHour');
         const testimonialCollection = client.db('SmartSPA').collection('testimonial');
-        const bannerCollection = client.db('GloriousSPA').collection('banners');
-        const userCollection = client.db('GloriousSPA').collection('users');
-        const whyChooseUsCollection = client.db('GloriousSPA').collection('whyChooseUs');
+        const bannerCollection = client.db('SmartSPA').collection('banners');
+        const userCollection = client.db('SmartSPA').collection('users');
+        const whyChooseUsCollection = client.db('SmartSPA').collection('whyChooseUs');
 
 
         // package related api 
@@ -349,7 +349,7 @@ async function run() {
         // all user
 
         app.get('/user', isLogin, isAdmin, async (req, res) => {
-            const result = (await userCollection.find().toArray());
+            const result = (await userCollection.find().sort({ email: -1 }).toArray());
             res.send(result);
         });
 
