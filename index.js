@@ -370,6 +370,8 @@ async function run() {
 
         const { ObjectId } = require("mongodb");
 
+        // role update
+
         app.put("/user/:id", isLogin, isAdmin, async (req, res) => {
             try {
                 const id = req.params.id;
@@ -414,6 +416,10 @@ async function run() {
             let data = await userCollection.deleteOne(query);
             res.send(data);
         });
+
+
+
+
         // package slider related api
         app.post('/package-slider', async (req, res) => {
             const data = req.body;
