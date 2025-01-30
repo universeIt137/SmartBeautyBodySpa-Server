@@ -42,6 +42,7 @@ async function run() {
         const userCollection = client.db('SmartSPA').collection('users');
         const whyChooseUsCollection = client.db('SmartSPA').collection('whyChooseUs');
         const packageSliderCollection = client.db('SmartSPA').collection('packagesSlider');
+        const contactCollection = client.db('SmartSPA').collection('contacts');
 
 
         // package related api 
@@ -313,6 +314,7 @@ async function run() {
         app.post('/user-login', async (req, res) => {
             try {
                 const { email, password } = req.body;
+                console.log(email, password);
 
                 // Validate input
                 if (!email || !password) {
@@ -320,12 +322,12 @@ async function run() {
                 }
 
                 // Find the user with the given email and role as admin
-                const user = await userCollection.findOne({ email, role: "admin" });
+                const user = await userCollection.findOne({ email: email, role: "admin" ,password : password});
+                console.log(user);
 
                 if (!user) {
                     return res.status(401).json({ message: 'Invalid email or user does not have admin rights.' });
                 }
-
 
                 // Generate JWT token
                 const token = jwt.sign(
@@ -342,7 +344,7 @@ async function run() {
                     role: user.role
                 });
             } catch (error) {
-                console.error('Error during login:', error);
+                console.error('Error during login:', error.toString());
                 res.status(500).json({ message: 'An error occurred. Please try again later.' });
             }
         });
@@ -464,10 +466,12 @@ async function run() {
 
         app.get('/banner', async (req, res) => {
             const result = await bannerCollection.find().toArray();
+            console.log("ishan")
             res.send(result);
         });
 
         app.get('/banner/:id', async (req, res) => {
+            console.log("ishan")
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await bannerCollection.findOne(query);
