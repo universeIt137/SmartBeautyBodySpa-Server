@@ -41,6 +41,7 @@ async function run() {
         const bannerCollection = client.db('SmartSPA').collection('banners');
         const userCollection = client.db('SmartSPA').collection('users');
         const whyChooseUsCollection = client.db('SmartSPA').collection('whyChooseUs');
+        const packageSliderCollection = client.db('SmartSPA').collection('packagesSlider');
 
 
         // package related api 
